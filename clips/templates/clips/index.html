@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width">
     <title>Web dictaphone</title>
     <link href="{% static 'styles/app.css' %}" rel="stylesheet" type="text/css">
-  </head>
-  <body>
 
+    <script src="{% static 'scripts/app.js' %}"></script>
+    <!-- script src="scripts/websocket.js"></script -->
+  </head>
+
+  <body data-timestamp="<%= timestamp %>">
     <div class="wrapper">
 
       <header>
@@ -23,16 +26,16 @@
       </section>
 
       <section class="sound-clips">
-
-
-      </section>
-
-    <h1>Clip Names</h1>
-    <ul>
+        {% csrf_token %}
         {% for clip in clips %}
-            <li>{{ clip.name }}</li>
+        <article class="clip">
+          <audio controls="" src="{% url 'clip' path=clip.name %}" preload="none"></audio>
+          <p>{{ clip.name }}</p>
+          <button class="delete">Delete</button>
+          <p class="text"><%= clip.text %></p>
+        </article>
         {% endfor %}
-    </ul>
+      </section>
 
     </div>
 
@@ -41,11 +44,9 @@
     <aside>
       <h2>Information</h2>
 
-      <p>Web dictaphone is built using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator.getUserMedia">getUserMedia</a> and the <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder_API">MediaRecorder API</a>, which provides an easier way to capture Media streams.</p>
+      <p><a href="https://github.com/mdn/dom-examples/tree/main/media/web-dictaphone#web-dictaphone">Web dictaphone</a> is built using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator.getUserMedia">getUserMedia</a> and the <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder_API">MediaRecorder API</a>, which provides an easier way to capture Media streams.</p>
 
       <p>Icon courtesy of <a href="http://findicons.com/search/microphone">Find Icons</a>. Thanks to <a href="http://soledadpenades.com/">Sole</a> for the Oscilloscope code!</p>
     </aside>
-    <script src="{% static 'scripts/app.js' %}"></script>
-
   </body>
 </html>
