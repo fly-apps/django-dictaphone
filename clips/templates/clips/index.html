@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clips</title>
+</head>
+<body>
+    <h1>Clip Names</h1>
+    <ul>
+        {% for clip in clips %}
+            <li>{{ clip.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
