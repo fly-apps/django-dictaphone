@@ -14,13 +14,10 @@ class ClipListView(View):
 
 class ClipDetailView(View):
 	def get(self, request, path):
-		try:
-			clip = Clip.objects.get(name=path)
-			if clip.file:
-				return HttpResponse(clip.file.read(), content_type=clip.mime)
-			else:
-				return HttpResponse(status=404)
-		except Clip.DoesNotExist:
+		clip = Clip.objects.get(name=path)
+		if clip.file:
+			return HttpResponse(clip.file.read(), content_type=clip.mime)
+		else:
 			return HttpResponse(status=404)
 
 	def put(self, request, path):
@@ -33,10 +30,7 @@ class ClipDetailView(View):
 		return HttpResponse(json.dumps(record), content_type='application/json')
 
 	def delete(self, request, path):
-		try:
-			clip = Clip.objects.get(name=path)
-			clip.file.delete()
-			clip.delete()
-			return HttpResponse(status=204)
-		except Clip.DoesNotExist:
-			return HttpResponse(status=404)
+		clip = Clip.objects.get(name=path)
+		clip.file.delete()
+		clip.delete()
+		return HttpResponse(status=204)
