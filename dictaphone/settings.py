@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import environ
 import os
 from pathlib import Path
+
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-qep(+$mg+l)f!=h!@*rd!cy4u*v6#+l^a=ox0ncs2ssjl4bol+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ('gunicorn' not in os.environ.get('SERVER_SOFTWARE', '').lower())
 
 if os.environ.get('FLY_APP_NAME'):
     ALLOWED_HOSTS = [f'{os.environ.get("FLY_APP_NAME")}.fly.dev']
+    CSRF_TRUSTED_ORIGINS = [f'https://{os.environ.get("FLY_APP_NAME")}.fly.dev']
 else:
     ALLOWED_HOSTS = []
 
@@ -78,12 +82,17 @@ WSGI_APPLICATION = 'dictaphone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': env.db('DATABASE_URL')
     }
-}
+else:
+    DATABASES = {
+	'default': {
+	    'ENGINE': 'django.db.backends.sqlite3',
+	    'NAME': BASE_DIR / 'db.sqlite3',
+	}
+    }
 
 
 # Password validation
