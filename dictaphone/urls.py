@@ -17,11 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.views.static import serve
-from clips.views import index
+from clips.views import ClipListView
 from dictaphone import settings
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', ClipListView.as_view(), name='index'),
 
     path('admin/', admin.site.urls),
     path('clips/', include('clips.urls')),

@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import ClipListView, ClipDetailView
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path("<path:path>", views.clip, name='clip'),
+    path('', ClipListView.as_view(), name='clips'),
+    path("<path:path>", ClipDetailView.as_view(), name='clip'),
 ]
