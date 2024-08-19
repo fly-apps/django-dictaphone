@@ -24,7 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qep(+$mg+l)f!=h!@*rd!cy4u*v6#+l^a=ox0ncs2ssjl4bol+'
+if os.environ.get('SECRET_KEY'):
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+else:
+    SECRET_KEY = 'django-insecure-qep(+$mg+l)f!=h!@*rd!cy4u*v6#+l^a=ox0ncs2ssjl4bol+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ('gunicorn' not in os.environ.get('SERVER_SOFTWARE', '').lower())
@@ -88,12 +91,26 @@ if 'DATABASE_URL' in os.environ:
     }
 else:
     DATABASES = {
-	'default': {
-	    'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': BASE_DIR / 'db.sqlite3',
-	}
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
+# Storage
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+if os.environ.get('BUCKET_NAME'):
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "bucket_name": os.environ.get('BUCKET_NAME')
+            }
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
