@@ -42,13 +42,16 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clips'
+    'clips',
+    'notify'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +82,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'dictaphone.wsgi.application'
+# https://channels.readthedocs.io/en/latest/tutorial/part_1.html
+ASGI_APPLICATION = 'dictaphone.asgi.application'
 
 
 # Database
@@ -110,6 +114,24 @@ if os.environ.get('BUCKET_NAME'):
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
+    }
+
+# Redis Channel
+# https://channels.readthedocs.io/en/latest/topics/channel_layers.html#redis-channel-layer
+if os.environ.get('REDIS_URL'):
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [os.environ.get('REDIS_URL')],
+            },
+        },
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
+        }
     }
 
 # Password validation
