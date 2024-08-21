@@ -25,9 +25,4 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('clips/', include('clips.urls')),
-
-    path('favicon.ico', serve, {
-        'document_root': settings.BASE_DIR / 'static',
-        'path': 'favicon.ico'
-    }),
 ]
