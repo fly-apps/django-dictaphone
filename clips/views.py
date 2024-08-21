@@ -1,6 +1,6 @@
 from django.core import serializers
 from django.core.files.base import ContentFile
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render
 from django.views import View
@@ -18,7 +18,7 @@ class ClipDetailView(View):
 	def get(self, request, path):
 		clip = Clip.objects.get(name=path)
 		if clip.file:
-			return HttpResponse(clip.file.read(), content_type=clip.mime)
+			return FileResponse(clip.file, content_type=clip.mime)
 		else:
 			return HttpResponse(status=404)
 
