@@ -33,7 +33,7 @@
           <audio controls="" src="{% url 'clip' path=clip.name %}" preload="none"></audio>
           <p>{{ clip.name }}</p>
           <button class="delete">Delete</button>
-          <p class="text"><%= clip.text %></p>
+          <p class="text">{{ clip.text|default_if_none:"" }}</p>
         </article>
         {% endfor %}
       </section>

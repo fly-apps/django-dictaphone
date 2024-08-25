@@ -1,3 +1,4 @@
+import os
 from django.core import serializers
 from django.core.files.base import ContentFile
 from django.http import FileResponse, HttpResponse
@@ -7,6 +8,8 @@ from django.views import View
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 import json
+
+from .tasks import transcribe
 from .models import Clip
 
 class ClipListView(View):
@@ -30,6 +33,8 @@ class ClipDetailView(View):
 		record = model_to_dict(clip)
 		record.__delitem__('file')
 		self.notify()
+		if os.environ.get("WHISPER_URL"):
+			transcribe.delay(clip)
 		return HttpResponse(json.dumps(record), content_type='application/json')
 
 	def delete(self, request, path):
