@@ -30,11 +30,14 @@ class ClipDetailView(View):
 		clip.mime = request.headers['Content-Type']
 		clip.file.save(path, ContentFile(request.body))
 		clip.save()
+
+		if os.environ.get("WHISPER_URL"):
+			transcribe.delay(clip.id)
+
 		record = model_to_dict(clip)
 		record.__delitem__('file')
 		self.notify()
-		if os.environ.get("WHISPER_URL"):
-			transcribe.delay(clip)
+
 		return HttpResponse(json.dumps(record), content_type='application/json')
 
 	def delete(self, request, path):

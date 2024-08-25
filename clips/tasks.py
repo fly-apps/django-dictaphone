@@ -3,15 +3,17 @@ import os
 import requests
 from urllib.parse import urlparse
 
-@shared_task
-def transcribe(clip):
-    input_data = {'audio': clip.file.url}
+from clips.models import Clip
 
-    response = requests.put(
+@shared_task
+def transcribe(id):
+    clip = Clip.objects.get(id=id)
+
+    results = requests.put(
         os.getenv('WHISPER_URL'),
         headers={'Content-Type': 'application/json'},
-        json={'input': input_data}
-    )
+        json={'input': {'audio': clip.file.url}}
+    ).json()
 
-    results = response.json()
-    clip.update(text=results['output']['transcription'])
+    clip.text = results['output']['transcription']
+    clip.save()
