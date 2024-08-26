@@ -44,7 +44,6 @@ else:
 INSTALLED_APPS = [
     'daphne',
     'channels',
-    'django_celery_beat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -183,4 +182,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery settings
 CELERY_BROKER_URL = os.environ.get('REDIS_URL')
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
