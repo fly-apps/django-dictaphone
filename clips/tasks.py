@@ -1,7 +1,6 @@
 from celery import shared_task
 import os
 import requests
-from urllib.parse import urlparse
 
 from clips.models import Clip
 

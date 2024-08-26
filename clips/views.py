@@ -1,5 +1,4 @@
 import os
-from django.core import serializers
 from django.core.files.base import ContentFile
 from django.http import FileResponse, HttpResponse
 from django.forms.models import model_to_dict
