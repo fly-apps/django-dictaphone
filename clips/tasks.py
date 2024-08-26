@@ -3,6 +3,9 @@ import os
 import requests
 from urllib.parse import urlparse
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from clips.models import Clip
 
 @shared_task
@@ -17,3 +20,9 @@ def transcribe(id):
 
     clip.text = results['output']['transcription']
     clip.save()
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)('notify', {
+        'type': 'notify',
+        'message': 'New transcription available'
+    })

@@ -18,11 +18,14 @@ click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
 constantly==23.10.4
+cron-descriptor==1.4.5
 cryptography==43.0.0
 daphne==4.1.2
 Django==5.1
+django-celery-beat==2.7.0
 django-environ==0.11.2
 django-storages==1.14.4
+django-timezone-field==7.0
 gunicorn==23.0.0
 h11==0.14.0
 httptools==0.6.1
@@ -39,6 +42,7 @@ pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.22
 pyOpenSSL==24.2.1
+python-crontab==3.2.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 PyYAML==6.0.2
