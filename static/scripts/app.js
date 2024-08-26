@@ -22,13 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (audio.src.startsWith("blob:")) {
       window.URL.revokeObjectURL(audio.src);
     } else {
-      await fetch(audio.src, { 
+      await fetch(audio.src, {
         method: "DELETE",
         headers: {
           "X-CSRFToken": token,
         }
-     });
-      await publish();
+      });
     }
     clip.remove();
   }
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // click on name action: rename the clip
   // click on name action: rename the clip
   async function renameAction(e) {
-    const clipLabel =e.target;
+    const clipLabel = e.target;
     const existingName = clipLabel.textContent;
     const newClipName = prompt("Enter a new name for your sound clip?");
     if (newClipName === null || newClipName === "") {
@@ -66,8 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             clip.style.opacity = 1;
-
-            await publish();
           }
         }
       }
@@ -88,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
           : "audio/webm; codecs=opus",
       });
 
-      visualize(stream); 
+      visualize(stream);
 
       record.onclick = function () {
         mediaRecorder.start();
@@ -167,8 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.src = response.url;
 
         window.URL.revokeObjectURL(audioURL);
-
-        await publish();
       };
 
       mediaRecorder.ondataavailable = function (e) {
@@ -248,18 +243,5 @@ document.addEventListener('DOMContentLoaded', () => {
   for (const clip of clips) {
     clip.querySelector('.delete').onclick = deleteAction;
     clip.querySelector('p').onclick = renameAction;
-  } 
+  }
 })
-
-async function publish() {
-  let  timestamp = new Date().toISOString();
-  document.body.dataset.timestamp = timestamp;
-
-  await fetch("/publish", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ timestamp }),
-  });
-}

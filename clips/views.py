@@ -5,8 +5,6 @@ from django.http import FileResponse, HttpResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render
 from django.views import View
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 import json
 
 from .tasks import transcribe
@@ -15,7 +13,10 @@ from .models import Clip
 class ClipListView(View):
 	def get(self, request):
 		clips = Clip.objects.all()
-		return render(request, 'clips/index.html', {'clips': clips})
+		return render(request, 'clips/index.html', {
+			'clips': clips,
+			'timestamp': max([clip.timestamp() for clip in clips], default=None)
+		})
 
 class ClipDetailView(View):
 	def get(self, request, path):
@@ -36,7 +37,6 @@ class ClipDetailView(View):
 
 		record = model_to_dict(clip)
 		record.__delitem__('file')
-		self.notify()
 
 		return HttpResponse(json.dumps(record), content_type='application/json')
 
@@ -44,12 +44,4 @@ class ClipDetailView(View):
 		clip = Clip.objects.get(name=path)
 		clip.file.delete()
 		clip.delete()
-		self.notify()
 		return HttpResponse(status=204)
-	
-	def notify(self):
-		channel_layer = get_channel_layer()
-		async_to_sync(channel_layer.group_send)('notify', {
-			'type': 'notify',
-			'message': 'New clip available'
-		})
